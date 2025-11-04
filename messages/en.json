@@ -1,0 +1,26 @@
+{
+  "common": {
+    "title": "Admin Portal",
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Submit",
+    "dashboard": "Dashboard",
+    "welcome": "Welcome",
+    "language": {
+      "lo": "Lao",
+      "en": "English"
+    },
+    "loginTitle": "Admin Login",
+    "loginDescription": "Enter your credentials to access the admin panel",
+    "welcomeMessage": "Welcome to the Admin Portal",
+    "homeTitle": "Welcome to Kolao Group",
+    "homeDescription": "Multi-language admin portal with secure authentication"
+  },
+  "errors": {
+    "invalidCredentials": "Invalid email or password",
+    "loginFailed": "Login failed. Please try again.",
+    "sessionExpired": "Your session has expired. Please login again."
+  }
+}
