@@ -9,8 +9,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
     }
 
+    // Get API base URL from environment variables
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL
+
+    if (!apiBaseUrl) {
+      console.error("API_BASE_URL is not configured in environment variables")
+      return NextResponse.json(
+        { error: "Server configuration error. Please contact administrator." },
+        { status: 500 }
+      )
+    }
+
     // Forward request to external API with token
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`, {
+    const response = await axios.get(`${apiBaseUrl}/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

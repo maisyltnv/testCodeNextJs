@@ -12,7 +12,7 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  username: z.string().min(1, "Username is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 })
 
@@ -21,7 +21,7 @@ type LoginFormData = z.infer<typeof loginSchema>
 interface LoginFormProps {
   locale: string
   translations: {
-    email: string
+    username: string
     password: string
     submit: string
     loginTitle: string
@@ -75,9 +75,9 @@ export function LoginForm({ locale, translations }: LoginFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="email">{translations.email}</Label>
-        <Input id="email" type="email" placeholder="admin@example.com" {...register("email")} disabled={isLoading} />
-        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+        <Label htmlFor="username">{translations.username}</Label>
+        <Input id="username" type="text" placeholder="Enter your username" {...register("username")} disabled={isLoading} />
+        {errors.username && <p className="text-sm text-destructive">{errors.username.message}</p>}
       </div>
 
       <div className="space-y-2">

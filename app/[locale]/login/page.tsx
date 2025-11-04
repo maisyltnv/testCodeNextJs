@@ -18,7 +18,7 @@ export default async function LoginPage({ params }: { params: Promise<{ locale: 
   const tErrors = await getTranslations({ locale, namespace: "errors" })
 
   const translations = {
-    email: t("email"),
+    username: t("username"),
     password: t("password"),
     submit: t("submit"),
     loginTitle: t("loginTitle"),
