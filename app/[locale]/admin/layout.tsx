@@ -37,7 +37,7 @@ export default async function AdminLayout({
           <Separator orientation="vertical" className="mx-2 h-6" />
           <div className="text-sm text-muted-foreground">{labels.dashboard}</div>
         </div>
-        <div className="container mx-auto max-w-7xl p-4">
+        <div className="p-4">
           {children}
         </div>
       </SidebarInset>

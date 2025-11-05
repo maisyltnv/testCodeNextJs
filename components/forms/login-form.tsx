@@ -59,8 +59,8 @@ export function LoginForm({ locale, translations }: LoginFormProps) {
 
       if (response.ok && result.ok) {
         toast.success("Login successful!")
-        router.push(`/${locale}/admin`)
-        router.refresh()
+        // Refresh the page to update auth state
+        window.location.href = `/${locale}/admin`
       } else {
         toast.error(result.error || translations.invalidCredentials)
       }

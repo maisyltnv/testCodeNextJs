@@ -25,6 +25,8 @@ export function Header({ locale, translations }: HeaderProps) {
 
   const handleLogout = async () => {
     await logout()
+    // Redirect to login page with current locale
+    window.location.href = `/${locale}/login`
   }
 
   return (

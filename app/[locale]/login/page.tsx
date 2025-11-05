@@ -1,4 +1,6 @@
 import { getTranslations } from "next-intl/server"
+import { redirect } from "next/navigation"
+import { cookies } from "next/headers"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoginForm } from "@/components/forms/login-form"
 import Link from "next/link"
@@ -14,6 +16,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function LoginPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const cookieStore = await cookies()
+  const token = cookieStore.get("access_token")
+
+  // Redirect to dashboard if already logged in
+  if (token) {
+    redirect(`/${locale}/admin`)
+  }
+
   const t = await getTranslations({ locale, namespace: "common" })
   const tErrors = await getTranslations({ locale, namespace: "errors" })
 

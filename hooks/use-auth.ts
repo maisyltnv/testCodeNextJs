@@ -38,7 +38,7 @@ export function useAuth() {
     try {
       await fetch("/api/auth/logout", { method: "POST" })
       setUser(null)
-      window.location.href = "/lo/login"
+      // Note: Redirect is handled by the calling component (e.g., Header)
     } catch (error) {
       console.error("Logout failed:", error)
     }
