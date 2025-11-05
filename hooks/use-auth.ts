@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { usePathname } from "next/navigation"
 
 interface User {
   id: string
@@ -12,10 +13,15 @@ interface User {
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const pathname = usePathname()
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await fetch("/api/auth/me")
+      setLoading(true)
+      const response = await fetch("/api/auth/me", {
+        credentials: "include",
+        cache: "no-store",
+      })
       if (response.ok) {
         const data = await response.json()
         setUser(data)
@@ -32,6 +38,15 @@ export function useAuth() {
 
   useEffect(() => {
     fetchUser()
+  }, [fetchUser, pathname])
+
+  // Also refetch on window focus (in case login happened in another tab)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchUser()
+    }
+    window.addEventListener("focus", handleFocus)
+    return () => window.removeEventListener("focus", handleFocus)
   }, [fetchUser])
 
   const logout = useCallback(async () => {

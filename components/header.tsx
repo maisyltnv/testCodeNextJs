@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
 import { Button } from "@/components/ui/button"
@@ -21,7 +23,40 @@ interface HeaderProps {
 }
 
 export function Header({ locale, translations }: HeaderProps) {
-  const { user, loading, logout } = useAuth()
+  const { user, loading, logout, refetch } = useAuth()
+  const pathname = usePathname()
+
+  // Check if we're on an admin page
+  const isAdminPage = pathname?.includes("/admin")
+
+  // Force refetch auth state on mount and when pathname changes
+  useEffect(() => {
+    refetch()
+
+    // Refetch after a short delay to catch any state changes after navigation
+    const timeoutId = setTimeout(() => {
+      refetch()
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [refetch, pathname])
+
+  // Periodically check auth state (useful after login redirect)
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refetch()
+    }, 2000)
+
+    // Clear interval after 10 seconds (enough time for login to complete)
+    const clearIntervalTimeout = setTimeout(() => {
+      clearInterval(intervalId)
+    }, 10000)
+
+    return () => {
+      clearInterval(intervalId)
+      clearTimeout(clearIntervalTimeout)
+    }
+  }, [refetch])
 
   const handleLogout = async () => {
     await logout()
@@ -39,28 +74,33 @@ export function Header({ locale, translations }: HeaderProps) {
         <div className="flex items-center gap-3">
           <LanguageSwitcher currentLocale={locale} translations={translations.language} />
 
-          {!loading && (
+          {/* Hide login/logout buttons on admin pages since they're in the sidebar */}
+          {!isAdminPage && (
             <>
-              {user ? (
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href={`/${locale}/admin`}>
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      {translations.dashboard}
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    {translations.logout}
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href={`/${locale}/login`}>
-                    <LogIn className="mr-2 h-4 w-4" />
-                    {translations.login}
-                  </Link>
-                </Button>
+              {!loading && (
+                <>
+                  {user ? (
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/${locale}/admin`}>
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          {translations.dashboard}
+                        </Link>
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        {translations.logout}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/${locale}/login`}>
+                        <LogIn className="mr-2 h-4 w-4" />
+                        {translations.login}
+                      </Link>
+                    </Button>
+                  )}
+                </>
               )}
             </>
           )}
